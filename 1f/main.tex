@@ -1,0 +1,90 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Análisis del Nivel Salarial según Género y Características Laborales en Paraguay}
+\author{Diego López, Diego Noguera, Juan Olmedo.\\
+\small Facultad Politécnica - Universidad Nacional de Asunción}
+\date{Noviembre 2025}
+
+\begin{document}
+
+\maketitle
+\begin{center}
+\textbf{Trabajo Práctico Final – Ciencia de Datos}
+\end{center}
+
+\section{Introducción}
+La brecha salarial entre hombres y mujeres sigue siendo una de las principales manifestaciones de desigualdad en los mercados laborales de América Latina. Según la Comisión Económica para América Latina y el Caribe (CEPAL, 2022), las mujeres perciben en promedio un 17\% menos que los hombres por hora trabajada, incluso en ocupaciones similares. Este fenómeno tiene implicancias directas en la autonomía económica y en la distribución del bienestar social. 
+
+Diversos estudios del Banco Mundial (2023) y de la Organización Internacional del Trabajo (OIT, 2024) destacan que las diferencias de ingreso no se explican únicamente por factores observables como la educación o la experiencia laboral, sino también por la segregación ocupacional y los estereotipos de género presentes en el mercado de trabajo. En Paraguay, la Encuesta Permanente de Hogares Continua (EPHC) permite explorar esta problemática desde un enfoque cuantitativo y reproducible, utilizando técnicas de Ciencia de Datos. 
+
+El objetivo de este trabajo es construir un modelo de clasificación supervisada que permita predecir el nivel salarial mensual de personas empleadas a partir de variables personales y laborales, y analizar qué peso tiene el sexo frente a factores como la edad, la educación o la ocupación.
+
+\section{Metodología}
+Los datos utilizados provienen de la EPHC 2024 del Instituto Nacional de Estadística (INE), que recopila información socioeconómica de la población paraguaya. Las variables empleadas fueron: \textit{sexo (P06), edad (P02), nivel educativo (ED0504), ocupación (OCUP\_PEA), horas trabajadas (HORAB), zona (AREA), tipo de empleo (RAMA\_PEA), departamento (DPTO)} y \textit{salario neto mensual (e01aimde)}.  
+
+El proceso de análisis incluyó las siguientes etapas:
+\begin{enumerate}
+    \item \textbf{Limpieza y filtrado:} se eliminaron registros sin salario declarado y se convirtieron los valores no numéricos a formato adecuado.
+    \item \textbf{Creación de la variable objetivo:} se construyó \texttt{nivel\_salarial} dividiendo el salario neto en terciles (\textit{bajo}, \textit{medio} y \textit{alto}).
+    \item \textbf{Codificación y partición:} se aplicó \textit{One-Hot Encoding} a las variables categóricas y se dividieron los datos en conjuntos de entrenamiento (70\%) y prueba (30\%).
+    \item \textbf{Modelado:} se implementaron dos clasificadores —una \textbf{regresión logística multinomial} como modelo base y un \textbf{Random Forest} para capturar relaciones no lineales.
+    \item \textbf{Evaluación:} se calcularon las métricas de \textit{accuracy}, \textit{precision}, \textit{recall} y \textit{F1-score}, además de graficar la matriz de confusión y la importancia de las variables.
+\end{enumerate}
+
+\section{Resultados}
+El modelo de regresión logística alcanzó una precisión del 62\%, mientras que el Random Forest mejoró levemente con un 64\% de exactitud global. En ambos casos, las clases de salario \textit{bajo}, \textit{medio} y \textit{alto} se predijeron de forma equilibrada, aunque se observó cierta confusión entre las categorías \textit{medio} y \textit{alto}, reflejando el solapamiento natural en los niveles de ingreso.  
+
+En términos de métricas, el modelo no lineal logró un mejor equilibrio entre \textit{precision} y \textit{recall}, especialmente para el grupo de ingresos bajos. La matriz de confusión (Figura~\ref{fig:confusion}) muestra un mayor número de aciertos en la diagonal principal, indicando una mejora general respecto al modelo lineal.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{matriz_confusion.png}
+        \caption{Matriz de confusión del modelo Random Forest.}
+        \label{fig:confusion}
+    \end{minipage}
+    \hspace{0.05\linewidth}
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{importancia_variables.png}
+        \caption{Importancia de las variables según el modelo Random Forest.}
+        \label{fig:importancia}
+    \end{minipage}
+\end{figure}
+
+
+En cuanto a la importancia de variables (Figura~\ref{fig:importancia}), el modelo identificó como factores más relevantes las \textbf{horas trabajadas} y la \textbf{edad}, seguidas por la \textbf{ocupación} y el \textbf{departamento}. El \textbf{género} ocupó una posición intermedia-baja, lo que sugiere que las diferencias salariales se explican principalmente por variables laborales antes que por el sexo de la persona.
+
+
+
+\section{Discusión}
+Los resultados reflejan patrones coherentes con estudios regionales. De acuerdo con CEPAL (2022) y OIT (2024), la mayor parte de la brecha salarial puede atribuirse a diferencias en las condiciones laborales y en el tipo de empleo, más que a una discriminación directa en los salarios. En este análisis, el género influye, pero en menor medida que las horas trabajadas o la edad, lo que sugiere un efecto indirecto: las mujeres suelen concentrarse en empleos con menor carga horaria o en sectores de menor remuneración.
+
+Entre las principales limitaciones se encuentra la ausencia de variables sobre antigüedad, tipo de contrato, o responsabilidades familiares, que podrían mejorar la capacidad predictiva del modelo. Asimismo, la clasificación del salario en terciles simplifica una distribución de ingresos que en la práctica es más heterogénea.
+
+Este tipo de análisis puede contribuir a diseñar estrategias que promuevan una participación laboral más equitativa, fomentando la inserción de mujeres en sectores de alta productividad y fortaleciendo las políticas de corresponsabilidad familiar.
+
+\section{Conclusiones}
+El estudio permitió aplicar herramientas de Ciencia de Datos para abordar una problemática social de gran relevancia. Los modelos desarrollados lograron predecir el nivel salarial con una precisión cercana al 64\%, siendo el Random Forest el método más robusto. Las variables más determinantes fueron las horas trabajadas y la edad, mientras que el género mostró un impacto menor en la predicción directa del salario. 
+
+Sin embargo, este resultado no descarta la existencia de desigualdades, sino que resalta la necesidad de analizarlas desde un enfoque multidimensional.
+
+\section*{Referencias}
+\begin{itemize}
+    \item Banco Mundial (2023). \textit{Brecha salarial de género en América Latina: Avances y desafíos}. Washington D.C.
+    \item CEPAL (2022). \textit{Desigualdades de género en el mercado laboral latinoamericano}. Santiago de Chile.
+    \item Instituto Nacional de Estadística (2024). \textit{Encuesta Permanente de Hogares Continua (EPHC) 2024}. Asunción, Paraguay.
+    \item Organización Internacional del Trabajo (2024). \textit{Panorama Laboral en América Latina y el Caribe}. Ginebra.
+    \item INE Paraguay (2025). \textit{Metodología de la EPHC}. Asunción.
+\end{itemize}
+
+\end{document}
